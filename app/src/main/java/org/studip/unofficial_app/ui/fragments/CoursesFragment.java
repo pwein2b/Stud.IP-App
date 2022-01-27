@@ -39,7 +39,6 @@ import org.studip.unofficial_app.model.viewmodels.HomeActivityViewModel;
 import org.studip.unofficial_app.ui.HomeActivity;
 import org.studip.unofficial_app.ui.fragments.dialog.CourseForumDialogFragment;
 import org.studip.unofficial_app.ui.fragments.dialog.CourseInfoDialogFragment;
-import org.studip.unofficial_app.ui.fragments.dialog.CourseMembersDialogFragment;
 import org.studip.unofficial_app.ui.fragments.dialog.CourseNewsDialogFragment;
 import org.studip.unofficial_app.ui.plugins.fragments.dialog.CourseOpencastDialog;
 import org.studip.unofficial_app.ui.plugins.fragments.dialog.CoursewareDialog;
@@ -138,6 +137,24 @@ public class CoursesFragment extends SwipeRefreshFragment
                 courses_saved.removeObservers(getViewLifecycleOwner());
             });
     
+            binding.semesterPrevious.setOnClickListener(v -> {
+                int position = binding.semesterSelect.getSelectedItemPosition();
+                int max = binding.semesterSelect.getCount();
+
+                if (position < max - 1) {
+                    // Add instead of subtract since our semesters are in reverse order by the above code
+                    binding.semesterSelect.setSelection(position + 1);
+                }
+            });
+    
+            binding.semesterNext.setOnClickListener(v -> {
+                int position = binding.semesterSelect.getSelectedItemPosition();
+                int max = binding.semesterSelect.getCount();
+
+                if (position > 0) {
+                    binding.semesterSelect.setSelection(position - 1);
+                }
+            });
     
             binding.semesterSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
             {
@@ -188,7 +205,7 @@ public class CoursesFragment extends SwipeRefreshFragment
         
         return binding.getRoot();
     }
-    
+
     private static class SemesterAdapter extends ArrayAdapter<StudipSemester> {
         public SemesterAdapter(@NonNull Context context, int resource)
         {
@@ -305,14 +322,6 @@ public class CoursesFragment extends SwipeRefreshFragment
                 CourseNewsDialogFragment news = new CourseNewsDialogFragment();
                 news.setArguments(args);
                 news.show(getParentFragmentManager(), "course_news");
-            });
-            b.courseMembers.setOnClickListener(v1 ->
-            {
-                Bundle args = new Bundle();
-                args.putString("cid", c.course_id);
-                CourseMembersDialogFragment news = new CourseMembersDialogFragment();
-                news.setArguments(args);
-                news.show(getParentFragmentManager(), "course_members");
             });
             b.courseOpencast.setOnClickListener(v1 -> {
                 Bundle args = new Bundle();
